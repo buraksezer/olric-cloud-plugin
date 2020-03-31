@@ -19,6 +19,7 @@ import (
 	"log"
 
 	"github.com/hashicorp/go-discover"
+	"github.com/hashicorp/go-discover/provider/k8s"
 	"github.com/mitchellh/mapstructure"
 )
 
@@ -40,9 +41,11 @@ func (c *CloudDiscovery) checkErrors() error {
 	if c.log == nil {
 		return fmt.Errorf("logger cannot be nil")
 	}
-	_, ok := discover.Providers[c.config.Provider]
-	if !ok {
-		return fmt.Errorf("invalid provider: %s", c.config.Provider)
+	if c.config.Provider != "k8s" {
+		_, ok := discover.Providers[c.config.Provider]
+		if !ok {
+			return fmt.Errorf("invalid provider: %s", c.config.Provider)
+		}
 	}
 	return nil
 }
@@ -52,10 +55,14 @@ func (c *CloudDiscovery) Initialize() error {
 		return err
 	}
 
-	provider, _ := discover.Providers[c.config.Provider]
-	m := map[string]discover.Provider{
-		c.config.Provider: provider,
+	m := map[string]discover.Provider{}
+	if c.config.Provider == "k8s" {
+		m[c.config.Provider] = &k8s.Provider{}
+	} else {
+		provider, _ := discover.Providers[c.config.Provider]
+		m[c.config.Provider] = provider
 	}
+
 	opt := discover.WithProviders(m)
 	d, err := discover.New(opt)
 	if err != nil {
@@ -81,11 +88,11 @@ func (c *CloudDiscovery) SetConfig(cfg map[string]interface{}) error {
 }
 
 func (c *CloudDiscovery) getArgs() string {
-	var result string
+	result := fmt.Sprintf("provider=%s", c.config.Provider)
 
 	args, ok := c.config.Args.(string)
 	if ok {
-		return args
+		return fmt.Sprintf("%s %s", result, args)
 	}
 
 	for key, value := range c.config.Args.(map[string]string) {
