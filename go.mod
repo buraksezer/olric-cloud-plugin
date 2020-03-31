@@ -3,7 +3,8 @@ module github.com/buraksezer/olric-cloud-plugin
 go 1.14
 
 require (
-	github.com/googleapis/gnostic v0.4.0 // indirect
+	github.com/golang/protobuf v1.3.5 // indirect
+	github.com/googleapis/gnostic v0.4.1 // indirect
 	github.com/hashicorp/go-discover v0.0.0-20200108194735-7698de1390a1
 	github.com/mitchellh/mapstructure v1.2.0
 	github.com/pkg/errors v0.9.1 // indirect
