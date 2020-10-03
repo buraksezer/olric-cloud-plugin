@@ -88,6 +88,22 @@ See details about how you deploy your Olric-based application on Kubernetes:
 * [olric-kubernetes repository](https://github.com/buraksezer/olric-kubernetes)
 * [Olric documentation](https://github.com/buraksezer/olric#kubernetes)
 
+## Docker Build & Push
+
+Build a Docker image, in the root folder:
+
+```bash
+$ docker build -t $USERNAME/olric-cloud-plugin:$TAG .
+```
+
+Push the image to a registry:
+
+```bash
+$ docker push $USERNAME/olric-cloud-plugin:$TAG
+```
+
+See [Dockerfile](Dockerfile) for details.
+
 ## TODO
 
 Test this plugin on the following cloud providers:
